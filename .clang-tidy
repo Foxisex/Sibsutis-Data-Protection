@@ -19,6 +19,9 @@ Checks: >
   -altera-struct-pack-align,
   -bugprone-easily-swappable-parameters,
   -cppcoreguidelines-avoid-magic-numbers,
+  -readability-identifier-length,
+  -readability-isolate-declaration,
+  -google-readability-casting,
   
 WarningsAsErrors: true
 HeaderFilterRegex: ''

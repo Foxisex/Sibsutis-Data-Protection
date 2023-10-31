@@ -1,4 +1,4 @@
-set(target_name fts)
+set(target_name dp)
 
 add_library(${target_name} STATIC
 	libdp/lab1.cpp
@@ -19,4 +19,5 @@ target_link_libraries(
 	${target_name}
 	PRIVATE
 	m
+	
 )
