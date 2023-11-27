@@ -3,7 +3,8 @@ set(target_name dp)
 add_library(${target_name} STATIC
 	libdp/lab1.cpp
 	libdp/lab2.cpp
-	libdp/lab3.cpp)
+	libdp/lab3.cpp
+	libdp/lab4.cpp)
 	
 include(CompileOptions)
 set_compile_options(${target_name})
