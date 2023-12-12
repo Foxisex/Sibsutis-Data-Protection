@@ -1,5 +1,6 @@
 #include <libdp/lab1.hpp>
 
+
 // int64_t powmod(int64_t a, int64_t x, int64_t p)
 // {
 // 	int64_t y = 1;
@@ -32,6 +33,36 @@ int64_t powmod(int64_t a, int64_t x, int64_t p)
     return y;
 }
 
+template <typename T>
+T powmod(T a, T x, T p)
+{
+	T remainder;
+    T y = 1;
+    while (x > 0) {
+        //Работа со степенью
+        remainder = x % 2;
+        x = x / 2;
+        if (remainder == 1) {
+            y = (y * a) % p;
+        }
+        a = a * a % p;
+    }
+    return y;
+}
+
+
+bigint mod_pow(bigint num, bigint degree, bigint p)
+{
+	bigint result = 1;
+	for(; degree; num = num * num % p, degree >>= 1) {
+		if(degree & 1) {
+			result = result * num % p;
+		}
+	}
+
+	return result;
+}
+
 std::array<int64_t,3> Evklid(int64_t a, int64_t b) 
 {
 	if(b > a) {
@@ -55,12 +86,61 @@ std::array<int64_t,3> Evklid(int64_t a, int64_t b)
 	return U;
 }
 
-bool MillerRabinTest(int64_t n, int k)
+std::array<bigint,3> Evklid(bigint a, bigint b) 
+{
+	if(b > a) {
+		std::swap(a,b);
+	}
+	bigint q;
+
+	std::array<bigint, 3> U = {a, 1, 0};
+	std::array<bigint, 3> V = {b, 0, 1};
+	std::array<bigint, 3> T;
+	while (V[0] != 0) {
+		q = U[0]/V[0];
+		T[0] = U[0]%V[0];
+		T[1] = U[1] - q*V[1];
+		T[2] = U[2] - q*V[2];
+		for(int i = 0; i < 3; i++) {
+			U[i] = V[i];
+			V[i] = T[i];
+		}
+	}
+	return U;
+}
+
+
+template <typename T>
+std::array<T,3> Evklid(T a, T b) 
+{
+	if(b > a) {
+		std::swap(a,b);
+	}
+	int q;
+
+	std::array<T, 3> U = {a, 1, 0};
+	std::array<T, 3> V = {b, 0, 1};
+	std::array<T, 3> t;
+	while (V[0] != 0) {
+		q = U[0]/V[0];
+		t[0] = U[0]%V[0];
+		t[1] = U[1] - q*V[1];
+		t[2] = U[2] - q*V[2];
+		for(int i = 0; i < 3; i++) {
+			U[i] = V[i];
+			V[i] = t[i];
+		}
+	}
+	return U;
+}
+
+template <typename T>
+bool MillerRabinTest(T n, int k)
 {
 	if (n == 2 || n == 3) return true;
 	if (n < 2 || n % 2 == 0) return false;
 
-	int64_t t = n - 1;
+	T t = n - 1;
 	int s = 0;
 	while (t % 2 == 0) {
 		t /= 2;
@@ -70,10 +150,10 @@ bool MillerRabinTest(int64_t n, int k)
 	for (int i = 0; i < k; i++) {
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_int_distribution<int64_t> distr(2, n-3);
-		int64_t a = distr(gen);
+		boost::random::uniform_int_distribution<T> distr(2, n-3);
+		T a = distr(gen);
 
-		int64_t x = powmod(a, t, n);
+		T x = powmod(a, t, n);
 
 		if(x == 1 || x == n - 1) continue;
 
@@ -94,7 +174,7 @@ int64_t BigPrimeNum()
 	int64_t P;
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int64_t> distr((int64_t) pow(10,9), (int64_t) pow(10,12));
+	std::uniform_int_distribution<int64_t> distr((int64_t) pow(10,7), (int64_t) pow(10,9));
 	while(true) {
 		Q = distr(gen);
 		if(MillerRabinTest(Q, 128)) {
